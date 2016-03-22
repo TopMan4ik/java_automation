@@ -3,6 +3,10 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 import java.util.List;
 
+/**
+ * Created by gef on 18-Mar-16.
+ */
+
 
 public class Lesson5_18_03_16 extends TestHarness {
 
@@ -38,6 +42,7 @@ public class Lesson5_18_03_16 extends TestHarness {
     }
 
     /*
+    All about инкапсуляция
     privat - только из класса где объявлен
     protected - доступны для классов-потомков
     static - доступно без создания экземпляра метода

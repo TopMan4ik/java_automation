@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Created by gef
+ */
+
+
 public class TestHarness {
 
     WebDriver driver;
@@ -83,6 +88,10 @@ public class TestHarness {
         }
     }
 
+    /**
+     * Stops running for some time in milliseconds
+     * @param timeInMilliseconds int
+     */
     public void sleep(int timeInMilliseconds) {
         try {
             Thread.sleep(timeInMilliseconds);
