@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by gef
@@ -73,13 +72,13 @@ public class TestHarness {
     }
 
     public void selectValueInDropDown(By locator, String value) {
-        assertTrue("COULD NOT FIND DROPDOWN FIELD: " + locator.toString(), driver.findElement(locator).isDisplayed());
+        Assert.assertTrue(driver.findElement(locator).isDisplayed());
         Select DropDown = new Select(driver.findElement(locator));
         DropDown.selectByVisibleText(value);
     }
 
     public void checkCheckbox(By locator) {
-        assertTrue("THE CHECKBOX IS NOT VISIBLE ON THE PAGE!", driver.findElement(locator).isDisplayed());
+        Assert.assertTrue(driver.findElement(locator).isDisplayed());
         WebElement targetCheckbox = driver.findElement(locator);
         if (targetCheckbox.isSelected()) {
             System.out.println("Checkbox is already checked");

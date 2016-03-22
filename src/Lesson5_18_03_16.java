@@ -161,9 +161,9 @@ public class Lesson5_18_03_16 extends TestHarness {
         //свободные места (ряд, место)
         //вывести цену за билет
 
-        final By seance_xpath = By.xpath("//label[@class='date'][contains(text(), '23')]/following-sibling::div/ul/li[1]/a"); //first seance in list
-        final By seats_xpath = By.xpath("//div[@id='hall-scheme-container']/div/div");
-        final By prise = By.xpath("//div[@id='hall-scheme-legend']/ul/li[@class='seat-color1']");
+        By seance_xpath = By.xpath("//label[@class='date'][contains(text(), '23')]/following-sibling::div/ul/li[1]/a"); //first seance in list
+        By seats_xpath = By.xpath("//div[@id='hall-scheme-container']/div/div");
+        By prise = By.xpath("//div[@id='hall-scheme-legend']/ul/li[@class='seat-color1']");
 
         openPage("http://liniakino.com/showtimes/aladdin/");
         driver.findElement(seance_xpath).click();
