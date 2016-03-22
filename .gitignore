@@ -1,2 +1,4 @@
 .idea/*
+out/
+tasks/
 java_automation.iml

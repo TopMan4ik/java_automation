@@ -41,6 +41,7 @@ public class TestHarness {
      */
     public void openPage(String url) {
         driver.get(url);
+        //TODO: Assert.assertTrue(driver.getCurrentUrl().equals(url));
     }
 
     /**
