@@ -1,10 +1,11 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by gef on 3/22/2016.
  */
-
 
       /*
         Write a small application that automates the «2048 game»
@@ -29,24 +30,43 @@ import org.openqa.selenium.WebDriver;
 
 public class Game2048 {
 
-    public Game2048(WebDriver driver, String url) {
-        this.driver = driver;
-        this.URL = url;
+    public Game2048(String chosenDriver) {
+        this.chosenDriver = chosenDriver;
+        this.url = "http://gabrielecirulli.github.io/2048/";
     }
 
+    String chosenDriver;
     WebDriver driver;
-    String URL = "http://gabrielecirulli.github.io/2048/";
-    By NEW_GAME_XPATH = By.xpath("//a[@class='restart-button']");
-    By SCORE_XPATH = By.xpath("//div[@class='scores-container']");
-    By BEST_SCORE_XPATH = By.xpath("//div[@class='best-container']");
+    String url;
 
-    public void performRandomAction() {
+    public void setUp () {
+        setUp(chosenDriver);
+    }
+
+    public void setUp(String chosenDriver) {
+        if (chosenDriver.equalsIgnoreCase("chrome"))
+            driver = new ChromeDriver();
+        else if (chosenDriver.equalsIgnoreCase("firefox"))
+            driver = new FirefoxDriver();
+        else
+            System.out.println("DRIVER WAS NOT DEFINED!");
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+    }
+
+    public void tearDown(){
+        driver.close();
+        driver.quit();
+    }
+
+    public void openPage() {
+        driver.get(url);
+    }
+
+    public void playTheGame() {
 
     }
 
-    public void printBrowser() {
-
-    }
 
 
 }
