@@ -43,7 +43,6 @@ public class Game2048 extends TestHarness {
     String url;
 
     By scoreContainer = By.xpath("//div[@class='score-container']");
-    By game_message = By.xpath("//div[@class='game-message']");
 
     @Override
     public void setUp () {
@@ -72,11 +71,11 @@ public class Game2048 extends TestHarness {
     }
 
     public void playTheGame() {
-        for (int stepsCounter = 0; stepsCounter <20; stepsCounter++) {
+        for (int stepsCounter = 0; stepsCounter <11; stepsCounter++) {
             doRandomAction(getRandomInt(1,4));
             printFieldState(stepsCounter);
             sleep (300);
-        } //(!driver.findElement(game_message).isDisplayed());
+        }
     }
 
     public void printScore(){
@@ -86,17 +85,13 @@ public class Game2048 extends TestHarness {
     public void doRandomAction(int choice) {
         Actions builder = new Actions(driver);
         switch (choice) {
-            case 1:
-                builder.sendKeys(Keys.ARROW_DOWN).build().perform();
+            case 1: builder.sendKeys(Keys.DOWN).build().perform();
                 break;
-            case 2:
-                builder.sendKeys(Keys.ARROW_UP).build().perform();
+            case 2: builder.sendKeys(Keys.UP).build().perform();
                 break;
-            case 3:
-                builder.sendKeys(Keys.ARROW_LEFT).build().perform();
+            case 3: builder.sendKeys(Keys.LEFT).build().perform();
                 break;
-            case 4:
-                builder.sendKeys(Keys.ARROW_RIGHT).build().perform();
+            case 4: builder.sendKeys(Keys.RIGHT).build().perform();
                 break;
         }
     }
