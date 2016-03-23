@@ -9,13 +9,13 @@ public class NewGame {
 
     public static void main(String[] args) {
 
-        Game2048 game = new Game2048(selectBrowser());
+        Game2048 game = new Game2048("chrome");
         game.setUp();
         game.openPage();
         game.playTheGame();
+        game.printScore();
         game.tearDown();
     }
-
 
     public static String selectBrowser() {
         System.out.print("Choose browser: 1-chrome, 2-firefox: ");
@@ -28,6 +28,4 @@ public class NewGame {
         } else
             return "undefined";
     }
-
-
 }
