@@ -83,7 +83,6 @@ public class Game2048 extends TestHarness {
             doRandomActionUsingRobot(getRandomInt(1,4));
             String[][] gameField = getFieldState();
             printFieldState(gameField, stepsCounter);
-            sleep (300);
         }
     }
 
@@ -95,6 +94,7 @@ public class Game2048 extends TestHarness {
             case 3: builder.sendKeys(Keys.LEFT).build().perform(); break;
             case 4: builder.sendKeys(Keys.RIGHT).build().perform(); break;
         }
+        sleep(500);
     }
 
     public void doRandomActionUsingRobot(int choice) {
@@ -109,6 +109,7 @@ public class Game2048 extends TestHarness {
         } catch (Exception ex) {
             System.out.println("Fuck! Something goes wrong!");
         }
+        sleep(500);
     }
 
     public String[][] getFieldState() {
