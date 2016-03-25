@@ -86,7 +86,7 @@ public class Game2048 extends TestHarness {
             case 3: builder.sendKeys(Keys.LEFT).build().perform(); break;
             case 4: builder.sendKeys(Keys.RIGHT).build().perform(); break;
         }
-        //sleep(100); //Every step needs some time to wait because of animation
+        //sleep(100); //Every step needs some time to wait because of animations
     }
 
     public String[][] getFieldState() {
