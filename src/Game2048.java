@@ -2,12 +2,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
-
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,36 +29,31 @@ import java.util.concurrent.TimeUnit;
  - Logging framework instead of System.out.println(), write log to file
  */
 
+
 public class Game2048 extends TestHarness {
 
     /**
      * This is the constructor to create class instance with 2 variable we need
-     * @param chosenDriver String
+     * @param driver WebDriver
      */
-    public Game2048(String chosenDriver) {
-        this.chosenDriver = chosenDriver;
+    public Game2048(WebDriver driver) {
+        this.driver = driver;
         this.url = "http://gabrielecirulli.github.io/2048/";
     }
 
-    String chosenDriver;
-    WebDriver driver;
     String url;
 
     By scoreContainer = By.xpath("//div[@class='score-container']");
+    By tileContainer = By.xpath("//div[@class='tile-container']/div");
+    By gameOver = By.xpath("//div[@class='game-message game-over']");
 
     @Override
     public void setUp () {
-        setUp(chosenDriver);
+        setUp(driver);
     }
 
-    public void setUp(String chosenDriver) {
-        if (chosenDriver.equalsIgnoreCase("chrome"))
-            driver = new ChromeDriver();
-        else if (chosenDriver.equalsIgnoreCase("firefox"))
-            driver = new FirefoxDriver();
-        else
-            System.out.println("DRIVER WAS NOT DEFINED!");
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    public void setUp(WebDriver driver) {
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
@@ -75,14 +65,16 @@ public class Game2048 extends TestHarness {
 
     public void openPage() {
         driver.get(url);
+        driver.findElement(scoreContainer).click(); //It's needed for firefox to focus page
     }
 
     public void playTheGame() {
-        for (int stepsCounter = 0; stepsCounter <11; stepsCounter++) {
+        int stepsCounter = 0;
+        while (!isElementPresent(gameOver)) {
             doRandomActionUsingWebDriver(getRandomInt(1,4));
-            //doRandomActionUsingRobot(getRandomInt(1,4));
             String[][] gameField = getFieldState();
             printFieldState(gameField, stepsCounter);
+            stepsCounter++;
         }
     }
 
@@ -94,26 +86,11 @@ public class Game2048 extends TestHarness {
             case 3: builder.sendKeys(Keys.LEFT).build().perform(); break;
             case 4: builder.sendKeys(Keys.RIGHT).build().perform(); break;
         }
-        sleep(500);
-    }
-
-    public void doRandomActionUsingRobot(int choice) {
-        try {
-            Robot robot = new Robot();
-            switch (choice) {
-                case 1: robot.keyPress(KeyEvent.VK_RIGHT); break;
-                case 2: robot.keyPress(KeyEvent.VK_LEFT); break;
-                case 3: robot.keyPress(KeyEvent.VK_UP); break;
-                case 4: robot.keyPress(KeyEvent.VK_DOWN); break;
-            }
-        } catch (Exception ex) {
-            System.out.println("Fuck! Something goes wrong!");
-        }
-        sleep(500);
+        //sleep(100); //Every step needs some time to wait because of animation
     }
 
     public String[][] getFieldState() {
-        List<WebElement> tiles = driver.findElements(By.xpath("//div[@class='tile-container']/div"));
+        List<WebElement> tiles = driver.findElements(tileContainer);
         String[][] gameField = new String[4][4];
         for (WebElement tile : tiles) {
             int lastIndex = tile.getAttribute("class").indexOf("tile-position-");
@@ -142,6 +119,10 @@ public class Game2048 extends TestHarness {
 
     public void printScore(){
         System.out.println("Final score is: " + driver.findElement(scoreContainer).getText());
+    }
+
+    public boolean isElementPresent(By by) {
+        return driver.findElements(by).size() > 0;
     }
 
 }
