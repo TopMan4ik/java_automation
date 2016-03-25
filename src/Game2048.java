@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class Game2048 extends TestHarness {
 
     /**
-     * This is the constructor to create class instance with 2 variable we need
+     * This is the constructor to create class instance with 2 variables we need
      * @param driver WebDriver
      */
     public Game2048(WebDriver driver) {
@@ -108,9 +108,9 @@ public class Game2048 extends TestHarness {
         for (String[] row : gameField) {
             for (String tile : row){
                 if (tile == null)
-                    System.out.print("| 0 ");
+                    System.out.printf("|%3d ", 0);
                 else
-                    System.out.print("| " + tile + " ");
+                    System.out.printf("|%3s ", tile);
             }
             System.out.println("|");
         }
@@ -119,10 +119,6 @@ public class Game2048 extends TestHarness {
 
     public void printScore(){
         System.out.println("Final score is: " + driver.findElement(scoreContainer).getText());
-    }
-
-    public boolean isElementPresent(By by) {
-        return driver.findElements(by).size() > 0;
     }
 
 }

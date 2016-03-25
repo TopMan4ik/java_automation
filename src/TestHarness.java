@@ -115,4 +115,13 @@ public class TestHarness {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
         wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
+
+    /**
+     * Returns true if element is present on page
+     * @param by By
+     * @return boolean
+     */
+    public boolean isElementPresent(By by) {
+        return driver.findElements(by).size() > 0;
+    }
 }
