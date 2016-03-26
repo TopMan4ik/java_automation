@@ -3,6 +3,11 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,13 +47,14 @@ public class Game2048 extends TestHarness {
     }
 
     String url;
+    PrintWriter writer;
 
     By scoreContainer = By.xpath("//div[@class='score-container']");
     By tileContainer = By.xpath("//div[@class='tile-container']/div");
     By gameOver = By.xpath("//div[@class='game-message game-over']");
 
     @Override
-    public void setUp () {
+    public void setUp() {
         setUp(driver);
     }
 
@@ -58,7 +64,8 @@ public class Game2048 extends TestHarness {
     }
 
     @Override
-    public void tearDown(){
+    public void tearDown() {
+        writer.close();
         driver.close();
         driver.quit();
     }
@@ -71,9 +78,9 @@ public class Game2048 extends TestHarness {
     public void playTheGame() {
         int stepsCounter = 0;
         while (!isElementPresent(gameOver)) {
-            doRandomActionUsingWebDriver(getRandomInt(1,4));
             String[][] gameField = getFieldState();
             printFieldState(gameField, stepsCounter);
+            doRandomActionUsingWebDriver(getRandomInt(1,4));
             stepsCounter++;
         }
     }
@@ -86,7 +93,7 @@ public class Game2048 extends TestHarness {
             case 3: builder.sendKeys(Keys.LEFT).build().perform(); break;
             case 4: builder.sendKeys(Keys.RIGHT).build().perform(); break;
         }
-        //sleep(100); //Every step needs some time to wait because of animations
+        sleep(200); //Every step needs some time to wait because of animations
     }
 
     public String[][] getFieldState() {
@@ -104,21 +111,34 @@ public class Game2048 extends TestHarness {
     }
 
     public void printFieldState(String[][] gameField, int stepNumber) {
-        System.out.println("Step " + stepNumber + ":");
+        out("\nStep " + stepNumber + ":", true);
         for (String[] row : gameField) {
             for (String tile : row){
                 if (tile == null)
-                    System.out.printf("|%3d ", 0);
+                    out("| 0", false);
                 else
-                    System.out.printf("|%3s ", tile);
+                    out("| " + tile, false);
             }
-            System.out.println("|");
+            out("|", true);
         }
-        System.out.println(" ");
     }
 
     public void printScore(){
-        System.out.println("Final score is: " + driver.findElement(scoreContainer).getText());
+        out("Final score is: " + driver.findElement(scoreContainer).getText(), true);
+    }
+
+    public void initializeWriter() throws FileNotFoundException, UnsupportedEncodingException {
+        this.writer = new PrintWriter("scores.txt", "UTF-8");
+    }
+
+    public void out(String message, boolean newLine){
+        if (newLine) {
+            System.out.println(message);
+            writer.println(message);
+        } else {
+            System.out.print(message);
+            writer.print(message);
+        }
     }
 
 }
