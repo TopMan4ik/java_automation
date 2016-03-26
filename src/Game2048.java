@@ -115,9 +115,9 @@ public class Game2048 extends TestHarness {
         for (String[] row : gameField) {
             for (String tile : row){
                 if (tile == null)
-                    out("| 0", false);
+                    out("| 0 ", false);
                 else
-                    out("| " + tile, false);
+                    out("| " + tile + " ", false);
             }
             out("|", true);
         }
