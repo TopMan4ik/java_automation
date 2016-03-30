@@ -11,11 +11,10 @@ import org.openqa.selenium.WebDriver;
 public class MainPage_Lesson7_25_03_16 {
 
     private static WebDriver driver;
-    private static CommonMethods cm;
+    //private static CommonMethods cm;
 
-    MainPage_Lesson7_25_03_16(WebDriver driver, CommonMethods cm) {
+    MainPage_Lesson7_25_03_16(WebDriver driver) {
         this.driver = driver;
-        this.cm = cm;
     }
 
 
@@ -45,16 +44,16 @@ public class MainPage_Lesson7_25_03_16 {
         driver.findElement(LOGIN_BUTTON).click();
     }
 
-    public void registerNewUserNoTest(){
-        driver.findElement(REGISTRATION_TAB).click();
-        cm.sleep(2000);
-        driver.findElement(I_AM_BOY).click();
-        cm.fillInInput(NAME_FIELD, "test");
-        driver.findElement(CONTINUE_BUTTON).click();
-        cm.fillInInput(REGISTRATION_EMAIL_FIELD, cm.getNewEmail());
-        cm.fillInInput(REGISTRATION_PASSWORD_FIELD, USER_PASSWORD);
-        driver.findElement(LAST_BUTTON).click();
-    }
+    //public void registerNewUserNoTest(){
+    //    driver.findElement(REGISTRATION_TAB).click();
+    //    cm.sleep(2000);
+    //    driver.findElement(I_AM_BOY).click();
+    //    cm.fillInInput(NAME_FIELD, "test");
+    //    driver.findElement(CONTINUE_BUTTON).click();
+    //    cm.fillInInput(REGISTRATION_EMAIL_FIELD, cm.getNewEmail());
+    //    cm.fillInInput(REGISTRATION_PASSWORD_FIELD, USER_PASSWORD);
+    //    driver.findElement(LAST_BUTTON).click();
+    //}
 
 
 

@@ -17,6 +17,10 @@ public class CommonMethods {
 
     public WebDriver driver;
 
+    /**
+     *
+     * @param url String
+     */
     public void openPage(String url){
         driver.get(url);
     }
