@@ -1,6 +1,5 @@
 package kismia.test;
 
-import kismia.test.CommonMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -11,12 +10,14 @@ import org.openqa.selenium.WebDriver;
 
 public class MainPage_Lesson7_25_03_16 {
 
-    MainPage_Lesson7_25_03_16(WebDriver driver) {
-        this.driver = driver;
-    }
-
     private static WebDriver driver;
     private static CommonMethods cm;
+
+    MainPage_Lesson7_25_03_16(WebDriver driver, CommonMethods cm) {
+        this.driver = driver;
+        this.cm = cm;
+    }
+
 
     public static String URL = "https://kismia.com/";
 

@@ -1,17 +1,8 @@
 package kismia.test;
 
-import org.junit.Assert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.*;
-import org.testng.asserts.Assertion;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,8 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class BrowserFactory {
 
     WebDriver driver;
-
-    public static CommonMethods cm = new CommonMethods();
+    CommonMethods cm;
 
     @BeforeTest
     public void setUp(){
