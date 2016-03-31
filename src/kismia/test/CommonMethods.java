@@ -15,7 +15,11 @@ import java.util.Date;
 
 public class CommonMethods {
 
-    public WebDriver driver;
+    WebDriver driver;
+
+    public CommonMethods(WebDriver driver) {
+        this.driver = driver;
+    }
 
     /**
      *

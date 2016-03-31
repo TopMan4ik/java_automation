@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 public class BrowserFactory {
 
     WebDriver driver;
-    CommonMethods cm;
 
     @BeforeTest
     public void setUp(){

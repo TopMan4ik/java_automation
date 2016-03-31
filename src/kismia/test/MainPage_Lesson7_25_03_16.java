@@ -11,14 +11,15 @@ import org.openqa.selenium.WebDriver;
 public class MainPage_Lesson7_25_03_16 {
 
     private static WebDriver driver;
-    //private static CommonMethods cm;
+
 
     MainPage_Lesson7_25_03_16(WebDriver driver) {
         this.driver = driver;
+        this.URL = "https://kismia.com/";
     }
 
 
-    public static String URL = "https://kismia.com/";
+    public String URL = "https://kismia.com/";
 
     public String USER_EMAIL = "pavel.bunyaner.81@mail.ru"; //CSN98HL1B
     public String USER_PASSWORD = "prosto555";
@@ -36,7 +37,7 @@ public class MainPage_Lesson7_25_03_16 {
     public By LAST_BUTTON = By.xpath("//div[@id='block-last']/button");
 
 
-    public void login(String email, String password){
+    public void login(String email, String password) {
         driver.findElement(EMAIL_FIELD).clear();
         driver.findElement(EMAIL_FIELD).sendKeys(email);
         driver.findElement(PASSWORD_FIELD).clear();
@@ -44,17 +45,9 @@ public class MainPage_Lesson7_25_03_16 {
         driver.findElement(LOGIN_BUTTON).click();
     }
 
-    //public void registerNewUserNoTest(){
-    //    driver.findElement(REGISTRATION_TAB).click();
-    //    cm.sleep(2000);
-    //    driver.findElement(I_AM_BOY).click();
-    //    cm.fillInInput(NAME_FIELD, "test");
-    //    driver.findElement(CONTINUE_BUTTON).click();
-    //    cm.fillInInput(REGISTRATION_EMAIL_FIELD, cm.getNewEmail());
-    //    cm.fillInInput(REGISTRATION_PASSWORD_FIELD, USER_PASSWORD);
-    //    driver.findElement(LAST_BUTTON).click();
-    //}
+    public void registerNewUserNoTest() {
 
+    }
 
 
 
