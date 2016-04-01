@@ -77,7 +77,7 @@ public class Game2048 extends TestHarness {
 
     public void playTheGame() {
         int stepsCounter = 0;
-        while (!isElementPresent(gameOver)) {
+        while (!isElementPresent(gameOver)) {//it'll be good to change this check
             String[][] gameField = getFieldState();
             printFieldState(gameField, stepsCounter);
             doRandomActionUsingWebDriver(getRandomInt(1,4));
