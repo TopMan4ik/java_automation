@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
  */
 
 
-public class LoginTest extends BrowserFactory {
+public class LoginRegisterTest extends BrowserFactory {
 
     @Test
     public void loginOldUserTest() {
@@ -25,6 +25,17 @@ public class LoginTest extends BrowserFactory {
         cm.fillInInput(mainPage.PASSWORD_FIELD, mainPage.USER_PASSWORD);
         driver.findElement(mainPage.LOGIN_BUTTON).click();
         Assert.assertTrue(driver.findElement(By.xpath("//*[@id='nav']/ul/li[2]/a")).isDisplayed());
+    }
+
+    @Test
+    public void loginOldUserNegativeTest() {
+        MainPage_Lesson7_25_03_16 mainPage = new MainPage_Lesson7_25_03_16(driver);
+        CommonMethods cm = new CommonMethods(driver);
+        cm.openPage(mainPage.URL);
+        cm.fillInInput(mainPage.EMAIL_FIELD, mainPage.USER_EMAIL);
+        cm.fillInInput(mainPage.PASSWORD_FIELD, "hello-hello");
+        driver.findElement(mainPage.LOGIN_BUTTON).click();
+        Assert.assertTrue(driver.findElement(By.xpath("//span[contains(@class, 'error-msg')]/a")).isDisplayed());
     }
 
     @Test
