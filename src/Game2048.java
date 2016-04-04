@@ -51,7 +51,7 @@ public class Game2048 extends TestHarness {
 
     By scoreContainer = By.xpath("//div[@class='score-container']");
     By tileContainer = By.xpath("//div[@class='tile-container']/div");
-    By gameOver = By.xpath("//div[@class='game-message game-over']");
+    By gameOver = By.xpath("//div[contains(@class, 'game-message')]/p");
 
     @Override
     public void setUp() {
@@ -59,7 +59,7 @@ public class Game2048 extends TestHarness {
     }
 
     public void setUp(WebDriver driver) {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
     }
 
@@ -77,7 +77,7 @@ public class Game2048 extends TestHarness {
 
     public void playTheGame() {
         int stepsCounter = 0;
-        while (!isElementPresent(gameOver)) {//it'll be good to change this check
+        while (driver.findElement(gameOver).getText().isEmpty()) {
             String[][] gameField = getFieldState();
             printFieldState(gameField, stepsCounter);
             doRandomActionUsingWebDriver(getRandomInt(1,4));
