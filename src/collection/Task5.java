@@ -3,6 +3,8 @@ package collection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by gef on 03-Apr-16.
@@ -37,34 +39,75 @@ public class Task5 {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         ArrayList<String> list = new ArrayList<>();
         while (true) {
+            System.out.print("Please, enter string: ");
             String s = reader.readLine();
             if (s.isEmpty()) break;
             list.add(s);
         }
 
         String[] array = list.toArray(new String[list.size()]);
-        sort(array);
+        sortSmart(array);
+        printArray(array);
+    }
 
-        for (String x : array) {
-            System.out.println(x);
+    public static void sortSmart(String[] array) {
+        String[] helper = new String[array.length];
+        String[] numberArray = new String[array.length];
+        String[] stringArray = new String[array.length];
+        for (int i=0; i<array.length; i++){
+            if ( isNumber(array[i]) ){
+                helper[i] = "number";
+                numberArray[i] = array[i];
+                stringArray[i] = "";
+            } else {
+                helper[i] = "string";
+                stringArray[i] = array[i];
+                numberArray[i] = "";
+            }
+        }
+        sortDirect(stringArray);
+        sortReverse(numberArray);
+        for (int i=0; i<array.length; i++) {
+            if (helper[i].equals("number")) {
+                array[i] = getFirstValue(numberArray);
+            }
+            else
+                array[i] = getFirstValue(stringArray);
         }
     }
 
-    public static void sort(String[] array)
-    {
-        //напишите тут ваш код
+    public static void sortDirect(String[] array) {
+        for (int j=1; j<array.length; j++) {
+            for (int i = 1; i < array.length; i++) {
+                if (isGreaterThan(array[i-1], array[i])) {
+                    String temp = array[i-1];
+                    array[i-1] = array[i];
+                    array[i] = temp;
+                }
+            }
+        }
+    }
+
+    public static void sortReverse(String[] array) {
+        for (int j=1; j<array.length; j++) {
+            for (int i = 1; i < array.length; i++) {
+                if (!isGreaterThan(array[i-1], array[i])) {
+                    String temp = array[i-1];
+                    array[i-1] = array[i];
+                    array[i] = temp;
+                }
+            }
+        }
     }
 
     //Метод для сравнения строк: 'а' больше чем 'b'
-    public static boolean isGreaterThan(String a, String b)
-    {
+    public static boolean isGreaterThan(String a, String b) {
         return a.compareTo(b) > 0;
     }
 
 
     //строка - это на самом деле число?
-    public static boolean isNumber(String s)
-    {
+    public static boolean isNumber(String s) {
         if (s.length() == 0) return false;
 
         char[] chars = s.toCharArray();
@@ -78,6 +121,23 @@ public class Task5 {
             }
         }
         return true;
+    }
+
+    public static String getFirstValue(String[] array) {
+        for (int j = 0; j<array.length; j++) {
+            if (!array[j].equals("")) {
+                String temp = array[j];
+                array[j] = "";
+                return temp;
+            }
+        }
+        return "";
+    }
+
+    public static void printArray(String[] array) {
+        for (String string : array) {
+            System.out.println(string);
+        }
     }
 
 }

@@ -32,8 +32,7 @@ public class Task2_AlphabeticSort {
         do {
             System.out.print("Please, enter string: ");
             str = reader.readLine();
-            if (str.equals(""))
-                break;
+            if (str.equals("")) break;
             list.add(str);
         } while (true);
         return list;
