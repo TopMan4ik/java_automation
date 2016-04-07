@@ -1,9 +1,8 @@
 package kismia.test;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
+import org.testng.Assert;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
