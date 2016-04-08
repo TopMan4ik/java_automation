@@ -1,5 +1,6 @@
-.idea/*
-out/
-tasks/
-target/
-selenium.iml
+/*
+
+!src/*
+!.gitignore
+!pom.xml
+!readme.md
