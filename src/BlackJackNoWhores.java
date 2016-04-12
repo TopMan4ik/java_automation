@@ -30,7 +30,6 @@ public class BlackJackNoWhores {
         int qty = pickOpponentsQty();
         Set<Player> players = createPlayers(qty);
         playTheGame(players, deck);
-        //printDeck(deck);
     }
 
     public static List<String> createDeck(String[] cards){
@@ -78,7 +77,9 @@ public class BlackJackNoWhores {
 
     public static Set<Player> createPlayers(int qty) {
         Set<Player> players = new LinkedHashSet<>();
-        for (int i=0; i<qty; i++) {
+        Player you = new Player("You");
+        players.add(you);
+        for (int i=1; i<qty; i++) {
             Player player = new Player("gambler" + i);
             players.add(player);
             System.out.print("Choose behaviour model for " + player.name + " (1-risky, watchful by default): ");
@@ -94,12 +95,40 @@ public class BlackJackNoWhores {
 
     public static void playTheGame(Set<Player> players, List<String> deck) {
         System.out.println("\nBlackjack game has begun!");
-        //while (!gameIsOver) {
-        //
-        //}
         Player bank = new Player("Bank");
         makeFirstRound(players, deck, bank);
         printCurrentState(players, bank);
+        while (!gameIsOver) {
+            nextRound(players, deck, bank);
+            printCurrentState(players, bank);
+            checkStatus(players, bank);
+        }
+    }
+
+    public static void nextRound(Set<Player> players, List<String> deck, Player bank) {
+        for (Player player : players) {
+            if (player.name.equals("You")) {
+                System.out.println("Would you like to get more? (1-yes)");
+                Scanner in = new Scanner(System.in);
+                String playerChoise = in.nextLine();
+                if (playerChoise.equals("1"))
+                    getOneMore(player, deck);
+            }
+            if (player.name.equals("gambler")) {
+                if (player.score < 15)
+                    getOneMore(player, deck);
+                if (player.riskyCharacter && player.score < 17)
+                    getOneMore(player, deck);
+            }
+        }
+        if (bank.score < 14)
+            getOneMore(bank, deck);
+    }
+
+    public static void getOneMore(Player player, List<String> deck) {
+        String nextCard = deck.get(0);
+        player.cards.add(nextCard);
+        deck.remove(0);
     }
 
     public static void makeFirstRound(Set<Player> players, List<String> deck, Player bank) {
@@ -118,7 +147,7 @@ public class BlackJackNoWhores {
     public static void printCurrentState(Set<Player> players, Player bank) {
         System.out.println("Bank has next cards: " + bank.cards + " and Bank score is " + getScore(bank));
         for (Player player : players)
-            System.out.println("Player " + player.name + " has next cards: " + player.cards + " and his score is " + getScore(player));
+            System.out.println(player.name + " has next cards: " + player.cards + " and score is " + getScore(player));
     }
 
     public static int getScore(Player player) {
@@ -138,12 +167,28 @@ public class BlackJackNoWhores {
             if (card.contains("king")) score = score + 10;
             if (card.contains("ace")) score = score + 11;
         }
-        if (score == 21) {
-            System.out.println("Player " + player + " have a blackjack!");
-            gameIsOver = true;
-        }
         player.score = score;
         return score;
+    }
+
+    public static void checkStatus(Set<Player> players, Player bank) {
+        int bankScore = bank.score;
+        if (bankScore == 21) {
+            System.out.println("Bank have a blackjack!");
+        }
+        if (bankScore > 21) {
+            System.out.println("Bank got too much");
+        }
+        for (Player player : players) {
+            int playerScore = player.score;
+            if (playerScore == 21) {
+                System.out.println("Player " + player.name + " got " + player.score);
+            }
+            if (playerScore > 21) {
+                System.out.println("Player " + player.name + " got too much " + player.score);
+            }
+        }
+        //TODO: main check
     }
 
     public static void printDeck(List<String> set) {
