@@ -77,7 +77,8 @@ public class BlackJackNoWhores {
         checkStatus(players);
         while (!isGameOver) {
             nextRound(players, deck);
-            printCurrentState(players);
+            if (!isGameOver)
+                printCurrentState(players);
             checkStatus(players);
         }
         System.out.println("Game is over. Come again! =)");
@@ -101,7 +102,7 @@ public class BlackJackNoWhores {
             if (player.name.contains("gambler") && !player.isEnough) {
                 if (player.score < 14) {
                     getOneMoreCard(player, deck);
-                    if (player.score > 21)
+                    if (player.score >= 21)
                         player.isEnough = true;
                 } else if (player.riskyCharacter && player.score < 17) {
                     getOneMoreCard(player, deck);
