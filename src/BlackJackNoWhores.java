@@ -10,8 +10,7 @@ public class BlackJackNoWhores {
     public static String[] cards = {"2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "10♠", "J♠", "Q♠", "K♠", "A♠",
             "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9♥", "10♥", "J♥", "Q♥", "K♥", "A♥",
             "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "10♣", "J♣", "Q♣", "K♣", "A♣",
-            "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "10♦", "J♦", "Q♦", "K♦", "A♦",
-            };
+            "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "10♦", "J♦", "Q♦", "K♦", "A♦",};
 
     static boolean isGameOver = false;
 
@@ -35,7 +34,7 @@ public class BlackJackNoWhores {
     public static int pickPlayersQty() throws Exception {
         int qty = 2;
         while (true) {
-            System.out.print("Pick players qty between 2 and 6 (2 by default and it means you and Bank): ");
+            System.out.print("Pick players qty between 2 and 6 (2 by default and it means you play versus Bank): ");
             Scanner in = new Scanner(System.in);
             String qtyString = in.nextLine();
             if (isNumber(qtyString))
@@ -94,7 +93,7 @@ public class BlackJackNoWhores {
                 String playersChoice = in.nextLine();
                 if (playersChoice.equals("1")) {
                     getOneMoreCard(player, deck);
-                    if (player.score > 21) player.isEnough = true;
+                    if (player.score >= 21) player.isEnough = true;
                 }
                 else player.isEnough = true;
             }
@@ -106,7 +105,7 @@ public class BlackJackNoWhores {
                         player.isEnough = true;
                 } else if (player.riskyCharacter && player.score < 17) {
                     getOneMoreCard(player, deck);
-                    if (player.score > 21)
+                    if (player.score >= 21)
                         player.isEnough = true;
                 }
                 else
@@ -116,7 +115,7 @@ public class BlackJackNoWhores {
             if (player.name.equals("Bank") && !player.isEnough) {
                 if (player.score < 17) {
                     getOneMoreCard(player, deck);
-                    if (player.score > 21)
+                    if (player.score >= 21)
                         player.isEnough = true;
                 } else
                     player.isEnough = true;
@@ -174,22 +173,17 @@ public class BlackJackNoWhores {
 
     public static void checkStatus(Set<Player> players) {
         int bankScore = 0;
-        int bankCardsQty = 0;
         for (Player player : players) {
-            if (player.name.equals("Bank")) {
+            if (player.name.equals("Bank"))
                 bankScore = player.score;
-                bankCardsQty = player.cards.size();
-            }
         }
-
         Set<String>readiness = new HashSet<>();
         for (Player player : players) {
             if (!player.isEnough)
                 readiness.add("false");
-            else if (player.isEnough)
+            else
                 readiness.add("true");
         }
-
         if (!readiness.contains("false")) {
             isGameOver = true;
             evaluateResults(players, bankScore);
@@ -201,18 +195,18 @@ public class BlackJackNoWhores {
             if (!player.name.equals("Bank")) {
                 if (bankScore > 21) {
                     if (player.score <= 21)
-                        System.out.println(player.name + " won");
+                        System.out.println(player.name + " won :)");
                     else
-                        System.out.println(player.name + " loose");
+                        System.out.println(player.name + " loose :(");
                 }
                 if (bankScore <= 21 && player.score > 21)
-                    System.out.println(player.name + " loose");
+                    System.out.println(player.name + " loose :(");
                 if (bankScore <= 21 && player.score <= 21) {
                     if (bankScore > player.score)
-                        System.out.println(player.name + " loose");
+                        System.out.println(player.name + " loose :(");
                     else if (bankScore == player.score)
-                        System.out.println(player.name + " keep his money");
-                    else System.out.println(player.name + " won");
+                        System.out.println(player.name + " keep money :|");
+                    else System.out.println(player.name + " won :)");
                 }
             }
         }
