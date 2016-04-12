@@ -4,13 +4,6 @@ import java.util.*;
  * Created by gef on 4/8/2016.
  */
 
-/*
-Написать Black Jack с возможностью играть с 2 соперниками (ИИ)
-при старте игры выбирать количество соперников
-+ зашить логку выбора для 1го и для 2го компьютера-игрока
-1й будет осторожничать (не брать много)
-2й будет как демон брать карты пока меньше чем 18 например
- */
 
 public class BlackJackNoWhores {
 
@@ -23,24 +16,22 @@ public class BlackJackNoWhores {
             "two of hearts", "three of hearts", "four of hearts", "five of hearts", "six of hearts", "seven of hearts",
             "eight of hearts", "nine of hearts", "ten of hearts", "jack of hearts", "queen of hearts", "king of hearts", "ace of hearts" };
 
-    static boolean gameIsOver = false;
+    static boolean isGameOver = false;
 
     public static void main(String[] args) throws Exception {
         List<String> deck = createDeck(cards);
-        int qty = pickOpponentsQty();
-        Set<Player> players = createPlayers(qty);
+        Set<Player> players = createPlayers(pickOpponentsQty());
         playTheGame(players, deck);
+        printDeck(deck);
     }
 
     public static List<String> createDeck(String[] cards){
-        List<String> deck = new ArrayList<>(); //deck to start game with
-        List<String> list = new ArrayList<>();
-        for (String card : cards) //TODO: Collections.addAll(Arrays.asList(cards))
-            list.add(card);
+        List<String> deck = new ArrayList<>();
+        ArrayList<String> list = (new ArrayList<>(Arrays.asList(cards)));
         for (int i=0; i<52; i++) {
             int rnd = getRandomCard(list.size());
             deck.add(list.get(rnd - 1));
-            list.remove(rnd-1);
+            list.remove(rnd - 1);
         }
         return deck;
     }
@@ -63,22 +54,12 @@ public class BlackJackNoWhores {
         return qty;
     }
 
-    public static boolean isNumber(String s) {
-        if (s.length() == 0) return false;
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char c = chars[i];
-            if ((i != 0 && c == '-')
-                    || (!Character.isDigit(c) && c != '-') )
-                return false;
-        }
-        return true;
-    }
-
     public static Set<Player> createPlayers(int qty) {
         Set<Player> players = new LinkedHashSet<>();
         Player you = new Player("You");
         players.add(you);
+        Player bank = new Player("Bank");
+        players.add(bank);
         for (int i=1; i<qty; i++) {
             Player player = new Player("gambler" + i);
             players.add(player);
@@ -95,17 +76,18 @@ public class BlackJackNoWhores {
 
     public static void playTheGame(Set<Player> players, List<String> deck) {
         System.out.println("\nBlackjack game has begun!");
-        Player bank = new Player("Bank");
-        makeFirstRound(players, deck, bank);
-        printCurrentState(players, bank);
-        while (!gameIsOver) {
-            nextRound(players, deck, bank);
-            printCurrentState(players, bank);
-            checkStatus(players, bank);
+        firstRound(players, deck);
+        printCurrentState(players);
+        checkStatus(players);
+        while (!isGameOver) {
+            nextRound(players, deck);
+            printCurrentState(players);
+            checkStatus(players);
         }
     }
 
-    public static void nextRound(Set<Player> players, List<String> deck, Player bank) {
+    public static void nextRound(Set<Player> players, List<String> deck) {
+        System.out.println("New round!");
         for (Player player : players) {
             if (player.name.equals("You")) {
                 System.out.println("Would you like to get more? (1-yes)");
@@ -113,45 +95,54 @@ public class BlackJackNoWhores {
                 String playerChoise = in.nextLine();
                 if (playerChoise.equals("1"))
                     getOneMore(player, deck);
+                else player.isEnough = true;
             }
-            if (player.name.equals("gambler")) {
-                if (player.score < 15)
+            if (player.name.contains("gambler")) {
+                if (player.score < 14) {
                     getOneMore(player, deck);
-                if (player.riskyCharacter && player.score < 17)
+                } else if (player.riskyCharacter && player.score < 17)
                     getOneMore(player, deck);
+                else
+                    player.isEnough = true;
+            }
+            if (player.name.equals("Bank")) {
+                if (player.score < 17)
+                    getOneMore(player, deck);
+                else
+                    player.isEnough = true;
             }
         }
-        if (bank.score < 14)
-            getOneMore(bank, deck);
     }
 
     public static void getOneMore(Player player, List<String> deck) {
         String nextCard = deck.get(0);
         player.cards.add(nextCard);
         deck.remove(0);
+        calculateScore(player);
     }
 
-    public static void makeFirstRound(Set<Player> players, List<String> deck, Player bank) {
+    public static void firstRound(Set<Player> players, List<String> deck) {
         for (int i=0; i<2; i++) {
             for (Player player : players) {
-                String card = deck.get(0);
-                player.cards.add(card);
-                deck.remove(0);
+                if (!player.name.equals("Bank"))
+                    getOneMore(player, deck);
+                if (player.name.equals("Bank") && player.cards.isEmpty())
+                    getOneMore(player, deck);
             }
         }
-        String card = deck.get(0);
-        bank.cards.add(card);
-        deck.remove(0);
     }
 
-    public static void printCurrentState(Set<Player> players, Player bank) {
-        System.out.println("Bank has next cards: " + bank.cards + " and Bank score is " + getScore(bank));
-        for (Player player : players)
-            System.out.println(player.name + " has next cards: " + player.cards + " and score is " + getScore(player));
+    public static void printCurrentState(Set<Player> players) {
+        for (Player player : players) {
+            if (player.name.equals("Bank"))
+                System.out.println("Bank has next cards: " + player.cards + " and Bank's score is " + player.score);
+            else
+                System.out.println(player.name + " has next cards: " + player.cards + " and score is " + player.score);
+        }
     }
 
-    public static int getScore(Player player) {
-        int score = player.score;
+    public static int calculateScore(Player player) {
+        int score = 0;
         for (String card : player.cards) {
             if (card.contains("two")) score = score + 2;
             if (card.contains("three")) score = score + 3;
@@ -171,29 +162,47 @@ public class BlackJackNoWhores {
         return score;
     }
 
-    public static void checkStatus(Set<Player> players, Player bank) {
-        int bankScore = bank.score;
-        if (bankScore == 21) {
-            System.out.println("Bank have a blackjack!");
-        }
-        if (bankScore > 21) {
-            System.out.println("Bank got too much");
-        }
+    public static void checkStatus(Set<Player> players) {
+        int bankScore = 0;
+        int bankCardsQty = 0;
         for (Player player : players) {
-            int playerScore = player.score;
-            if (playerScore == 21) {
-                System.out.println("Player " + player.name + " got " + player.score);
-            }
-            if (playerScore > 21) {
-                System.out.println("Player " + player.name + " got too much " + player.score);
+            if (player.name.equals("Bank")) {
+                bankScore = player.score;
+                bankCardsQty = player.cards.size();
             }
         }
-        //TODO: main check
+
+        Set<String>readiness = new HashSet<>();
+        for (Player player : players) {
+            if (player.score == 21 && bankScore < 21 && bankCardsQty > 1) {
+                System.out.println("Player " + player.name + " got blackjack!");
+                player.isEnough = true;
+            }
+            if (!player.isEnough)
+                readiness.add("false");
+        }
+
+        for (String smth : readiness) {
+            if (smth.equals("false"))
+                isGameOver = true;
+        }
+
     }
 
     public static void printDeck(List<String> set) {
         for (String elem : set)
             System.out.println(elem);
+    }
+
+    public static boolean isNumber(String s) {
+        if (s.length() == 0) return false;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if ((i != 0 && c == '-') || (!Character.isDigit(c) && c != '-') )
+                return false;
+        }
+        return true;
     }
 
     public static class Player {
@@ -203,12 +212,14 @@ public class BlackJackNoWhores {
             this.score = 0;
             this.cards = new HashSet<>();
             this.riskyCharacter = false;
+            this.isEnough = false;
         }
 
         public String name;
         public int score;
         boolean riskyCharacter;
         Set<String> cards;
+        boolean isEnough;
     }
 
 }
