@@ -7,50 +7,42 @@ import java.util.*;
 
 public class BlackJackNoWhores {
 
-    public static String[] cards = {"two of spades", "three of spades", "four of spades", "five of spades", "six of spades", "seven of spades",
-            "eight of spades", "nine of spades", "ten of spades", "jack of spades", "queen of spades", "king of spades", "ace of spades",
-            "two of clubs", "three of clubs", "four of clubs", "five of clubs", "six of clubs", "seven of clubs",
-            "eight of clubs", "nine of clubs", "ten of clubs", "jack of clubs", "queen of clubs", "king of clubs", "ace of clubs",
-            "two of diamonds", "three of diamonds", "four of diamonds", "five of diamonds", "six of diamonds", "seven of diamonds",
-            "eight of diamonds", "nine of diamonds", "ten of diamonds", "jack of diamonds", "queen of diamonds", "king of diamonds", "ace of diamonds",
-            "two of hearts", "three of hearts", "four of hearts", "five of hearts", "six of hearts", "seven of hearts",
-            "eight of hearts", "nine of hearts", "ten of hearts", "jack of hearts", "queen of hearts", "king of hearts", "ace of hearts" };
+    public static String[] cards = {"2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "10♠", "J♠", "Q♠", "K♠", "A♠",
+            "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9♥", "10♥", "J♥", "Q♥", "K♥", "A♥",
+            "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "10♣", "J♣", "Q♣", "K♣", "A♣",
+            "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "10♦", "J♦", "Q♦", "K♦", "A♦",
+            };
 
     static boolean isGameOver = false;
 
     public static void main(String[] args) throws Exception {
         List<String> deck = createDeck(cards);
-        Set<Player> players = createPlayers(pickOpponentsQty());
+        Set<Player> players = createPlayers(pickPlayersQty());
         playTheGame(players, deck);
-        printDeck(deck);
     }
 
     public static List<String> createDeck(String[] cards){
         List<String> deck = new ArrayList<>();
         ArrayList<String> list = (new ArrayList<>(Arrays.asList(cards)));
         for (int i=0; i<52; i++) {
-            int rnd = getRandomCard(list.size());
+            int rnd = (int)(Math.random() * list.size() + 1);
             deck.add(list.get(rnd - 1));
             list.remove(rnd - 1);
         }
         return deck;
     }
 
-    public static int getRandomCard(int max) {
-        return (int)(Math.random() * max + 1);
-    }
-
-    public static int pickOpponentsQty() throws Exception {
+    public static int pickPlayersQty() throws Exception {
         int qty = 2;
         while (true) {
-            System.out.print("Pick opponents qty between 2 and 6 (2 by default): ");
+            System.out.print("Pick players qty between 2 and 6 (2 by default and it means you and Bank): ");
             Scanner in = new Scanner(System.in);
             String qtyString = in.nextLine();
             if (isNumber(qtyString))
                 qty = Integer.valueOf(qtyString);
             if (qty >=2 && qty <=6) break;
         }
-        System.out.println("You picked " + qty + " players.");
+        System.out.println("You picked " + qty + " players.\n");
         return qty;
     }
 
@@ -60,22 +52,27 @@ public class BlackJackNoWhores {
         players.add(you);
         Player bank = new Player("Bank");
         players.add(bank);
-        for (int i=1; i<qty; i++) {
+        for (int i=2; i<qty; i++) {
             Player player = new Player("gambler" + i);
             players.add(player);
             System.out.print("Choose behaviour model for " + player.name + " (1-risky, watchful by default): ");
             Scanner in = new Scanner(System.in);
             String playerCharacter = in.nextLine();
-            if (playerCharacter.equals("1"))
+            if (playerCharacter.equals("1")) {
                 player.riskyCharacter = true;
-            else player.riskyCharacter = false;
-            System.out.println("Player " + player.name + " character is risky? - " + player.riskyCharacter);
+                System.out.println("Player " + player.name + " character is risky");
+            }
+            else {
+                player.riskyCharacter = false;
+                System.out.println("Player " + player.name + " character is watchful");
+            }
         }
         return players;
     }
 
     public static void playTheGame(Set<Player> players, List<String> deck) {
-        System.out.println("\nBlackjack game has begun!");
+        System.out.println("\nBlackjack game begins!");
+        System.out.println("Aces are always 11 points in current game version");
         firstRound(players, deck);
         printCurrentState(players);
         checkStatus(players);
@@ -84,37 +81,50 @@ public class BlackJackNoWhores {
             printCurrentState(players);
             checkStatus(players);
         }
+        System.out.println("Game is over. Come again! =)");
     }
 
     public static void nextRound(Set<Player> players, List<String> deck) {
-        System.out.println("New round!");
+        System.out.println("\n");
         for (Player player : players) {
-            if (player.name.equals("You")) {
-                System.out.println("Would you like to get more? (1-yes)");
+
+            if (player.name.equals("You") && !player.isEnough) {
+                System.out.print("Would you like to get more? (1-yes) ");
                 Scanner in = new Scanner(System.in);
-                String playerChoise = in.nextLine();
-                if (playerChoise.equals("1"))
-                    getOneMore(player, deck);
+                String playersChoice = in.nextLine();
+                if (playersChoice.equals("1")) {
+                    getOneMoreCard(player, deck);
+                    if (player.score > 21) player.isEnough = true;
+                }
                 else player.isEnough = true;
             }
-            if (player.name.contains("gambler")) {
+
+            if (player.name.contains("gambler") && !player.isEnough) {
                 if (player.score < 14) {
-                    getOneMore(player, deck);
-                } else if (player.riskyCharacter && player.score < 17)
-                    getOneMore(player, deck);
+                    getOneMoreCard(player, deck);
+                    if (player.score > 21)
+                        player.isEnough = true;
+                } else if (player.riskyCharacter && player.score < 17) {
+                    getOneMoreCard(player, deck);
+                    if (player.score > 21)
+                        player.isEnough = true;
+                }
                 else
                     player.isEnough = true;
             }
-            if (player.name.equals("Bank")) {
-                if (player.score < 17)
-                    getOneMore(player, deck);
-                else
+
+            if (player.name.equals("Bank") && !player.isEnough) {
+                if (player.score < 17) {
+                    getOneMoreCard(player, deck);
+                    if (player.score > 21)
+                        player.isEnough = true;
+                } else
                     player.isEnough = true;
             }
         }
     }
 
-    public static void getOneMore(Player player, List<String> deck) {
+    public static void getOneMoreCard(Player player, List<String> deck) {
         String nextCard = deck.get(0);
         player.cards.add(nextCard);
         deck.remove(0);
@@ -125,9 +135,9 @@ public class BlackJackNoWhores {
         for (int i=0; i<2; i++) {
             for (Player player : players) {
                 if (!player.name.equals("Bank"))
-                    getOneMore(player, deck);
+                    getOneMoreCard(player, deck);
                 if (player.name.equals("Bank") && player.cards.isEmpty())
-                    getOneMore(player, deck);
+                    getOneMoreCard(player, deck);
             }
         }
     }
@@ -144,19 +154,19 @@ public class BlackJackNoWhores {
     public static int calculateScore(Player player) {
         int score = 0;
         for (String card : player.cards) {
-            if (card.contains("two")) score = score + 2;
-            if (card.contains("three")) score = score + 3;
-            if (card.contains("four")) score = score + 4;
-            if (card.contains("five")) score = score + 5;
-            if (card.contains("six")) score = score + 6;
-            if (card.contains("seven")) score = score + 7;
-            if (card.contains("eight")) score = score + 8;
-            if (card.contains("nine")) score = score + 9;
-            if (card.contains("ten")) score = score + 10;
-            if (card.contains("jack")) score = score + 10;
-            if (card.contains("queen")) score = score + 10;
-            if (card.contains("king")) score = score + 10;
-            if (card.contains("ace")) score = score + 11;
+            if (card.contains("2")) score = score + 2;
+            if (card.contains("3")) score = score + 3;
+            if (card.contains("4")) score = score + 4;
+            if (card.contains("5")) score = score + 5;
+            if (card.contains("6")) score = score + 6;
+            if (card.contains("7")) score = score + 7;
+            if (card.contains("8")) score = score + 8;
+            if (card.contains("9")) score = score + 9;
+            if (card.contains("10")) score = score + 10;
+            if (card.contains("J")) score = score + 10;
+            if (card.contains("Q")) score = score + 10;
+            if (card.contains("K")) score = score + 10;
+            if (card.contains("A")) score = score + 11;
         }
         player.score = score;
         return score;
@@ -174,24 +184,38 @@ public class BlackJackNoWhores {
 
         Set<String>readiness = new HashSet<>();
         for (Player player : players) {
-            if (player.score == 21 && bankScore < 21 && bankCardsQty > 1) {
-                System.out.println("Player " + player.name + " got blackjack!");
-                player.isEnough = true;
-            }
             if (!player.isEnough)
                 readiness.add("false");
+            else if (player.isEnough)
+                readiness.add("true");
         }
 
-        for (String smth : readiness) {
-            if (smth.equals("false"))
-                isGameOver = true;
+        if (!readiness.contains("false")) {
+            isGameOver = true;
+            evaluateResults(players, bankScore);
         }
-
     }
 
-    public static void printDeck(List<String> set) {
-        for (String elem : set)
-            System.out.println(elem);
+    public static void evaluateResults(Set<Player> players, int bankScore) {
+        for (Player player : players) {
+            if (!player.name.equals("Bank")) {
+                if (bankScore > 21) {
+                    if (player.score <= 21)
+                        System.out.println(player.name + " won");
+                    else
+                        System.out.println(player.name + " loose");
+                }
+                if (bankScore <= 21 && player.score > 21)
+                    System.out.println(player.name + " loose");
+                if (bankScore <= 21 && player.score <= 21) {
+                    if (bankScore > player.score)
+                        System.out.println(player.name + " loose");
+                    else if (bankScore == player.score)
+                        System.out.println(player.name + " keep his money");
+                    else System.out.println(player.name + " won");
+                }
+            }
+        }
     }
 
     public static boolean isNumber(String s) {
