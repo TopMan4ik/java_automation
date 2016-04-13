@@ -77,8 +77,7 @@ public class BlackJackNoWhores {
         checkStatus(players);
         while (!isGameOver) {
             nextRound(players, deck);
-            if (!isGameOver)
-                printCurrentState(players);
+            printCurrentState(players);
             checkStatus(players);
         }
         System.out.println("Game is over. Come again! =)");
