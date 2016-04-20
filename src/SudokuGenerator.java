@@ -77,7 +77,16 @@ public class SudokuGenerator {
     }
 
     public static void swapRowsArea(int[][] field) {
-
+        int randomRowsArea = getRandomInt(0,2);
+        int randomRowsAreaToReplace = getRandomInt(0,2);
+        int[][] temp = new int[3][9];
+        for (int i=0; i<3; i++) {
+            for (int j=0; j<9; j++) {
+                temp[i][j] = field[3*randomRowsAreaToReplace+i][j];
+                field[3*randomRowsAreaToReplace+i][j] = field[3*randomRowsArea+i][j];
+                field[3*randomRowsArea+i][j] = temp[i][j];
+            }
+        }
     }
 
     public static void swapColsArea(int[][] field) {
